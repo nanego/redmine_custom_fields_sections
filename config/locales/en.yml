@@ -1,2 +1,6 @@
 en:
-
+  custom_fields_section_caption: Custom Fields sections
+  label_custom_field_section_new: New custom fields section
+  name: Name
+  position: Position
+  custom_fields_count: Custom Fields

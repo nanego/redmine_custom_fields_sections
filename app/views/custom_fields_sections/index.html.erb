@@ -1,0 +1,32 @@
+<div class="contextual">
+  <%= link_to l(:label_custom_field_section_new), new_custom_fields_section_path, :class => 'icon icon-add' %>
+</div>
+
+<%= title l(:custom_fields_section_caption) %>
+
+<% if @custom_fields_sections.present? %>
+  <table class="list custom_fields_sections">
+    <thead><tr>
+      <th><%= l(:name) %></th>
+      <th><%= l(:custom_fields_count) %></th>
+      <th></th>
+    </tr></thead>
+    <tbody>
+    <% @custom_fields_sections.each do |section| -%>
+      <tr>
+        <td class="name">
+          <%= link_to section.name, edit_custom_fields_section_path(section) %>
+        </td>
+        <td>
+          <%= section.project_custom_fields.count %>
+        </td>
+        <td class="buttons">
+          <%= delete_link custom_fields_section_path(section) %>
+        </td>
+      </tr>
+    <% end; reset_cycle %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>

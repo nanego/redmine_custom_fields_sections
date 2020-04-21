@@ -1,0 +1,6 @@
+<%= custom_fields_section_title @custom_fields_section %>
+
+<%= labelled_form_for @custom_fields_section do |f| %>
+  <%= render :partial => 'form', :locals => { :f => f } %>
+  <%= submit_tag l(:button_edit) %>
+<% end %>
