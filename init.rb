@@ -1,5 +1,8 @@
+require_dependency 'redmine_custom_fields_sections/hooks'
+
 Rails.application.config.to_prepare do
   require_dependency "redmine_custom_fields_sections/project_custom_field_patch"
+  require_dependency "redmine_custom_fields_sections/custom_fields_helper_patch"
 end
 
 Redmine::Plugin.register :redmine_custom_fields_sections do
