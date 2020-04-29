@@ -1,0 +1,12 @@
+<% group_projects_custom_fields_values_by_section(@project.visible_custom_field_values).each do |value|
+  if value.is_a? Hash %>
+    <fieldset >
+      <legend><%= value[:name] %></legend>
+      <% value[:items].each do |cfv| %>
+        <p><%= custom_field_tag_with_label :project, cfv %></p>
+      <% end %>
+    </fieldset>
+  <% else %>
+    <p><%= custom_field_tag_with_label :project, value %></p>
+  <% end %>
+<% end %>
