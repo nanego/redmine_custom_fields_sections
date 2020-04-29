@@ -1,8 +1,12 @@
 tr.section_custom_field span.name {
-    padding-left: 24px;
-    background: url(../../../images/arrow_right.png) no-repeat 8px 50%;
+  padding-left: 24px;
+  background: url(../../../images/arrow_right.png) no-repeat 8px 50%;
 }
 
 tr.section_custom_field span {
-    line-height: 20px;
+  line-height: 20px;
+}
+
+fieldset.custom_fields_section {
+  margin: 20px 10px;
 }
