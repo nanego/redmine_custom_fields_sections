@@ -1,5 +1,5 @@
 class CustomFieldsSection < ActiveRecord::Base
-  has_many :project_custom_fields, foreign_key: "section_id", class_name: "CustomField", :dependent => :nullify
+  has_many :project_custom_fields, foreign_key: "section_id", class_name: "CustomField", dependent: :nullify
 
-  validates :name, :presence => true
+  validates :name, presence: true, uniqueness: true
 end

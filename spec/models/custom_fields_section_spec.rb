@@ -10,8 +10,15 @@ describe CustomFieldsSection do
       expect(section.save).to eq true
     end
 
-    it "doesen't create a section without a name" do
+    it "doesn't create a section without a name" do
       section = CustomFieldsSection.new()
+      expect(section.save).to eq false
+    end
+
+    it "doesn't create a section with a not unique name" do
+      CustomFieldsSection.create(name: "Test section")
+
+      section = CustomFieldsSection.new(name: "Test section")
       expect(section.save).to eq false
     end
 
