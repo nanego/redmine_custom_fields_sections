@@ -22,7 +22,15 @@ class CustomFieldsSectionsController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    first_position = 0
+
+    @custom_fields_section.project_custom_fields.sort.each_with_index do |cf, i|
+      first_position = cf.position if i == 0
+
+      cf.update(position: first_position + i)
+    end
+  end
 
   def update
     if @custom_fields_section.update(custom_fields_section_params)
