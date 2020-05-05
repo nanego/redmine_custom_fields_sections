@@ -2,6 +2,7 @@ require "spec_helper"
 
 describe CustomFieldsSectionsHelper, type: :helper do
   include ApplicationHelper
+  include ERB::Util
 
   it "should return title for new custom fields section" do
     section = CustomFieldsSection.new(name: "Test section")

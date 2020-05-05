@@ -8,17 +8,20 @@ describe CustomFieldsSectionsController, type: :controller do
     @request.session[:user_id] = 1 # Admin
     User.current = User.find(1)
     Setting.default_language = 'en'
-    CustomFieldsSection.create!(name: "Test section")
   end
 
+  let (:section) { CustomFieldsSection.create(name: "Test section") }
+
   describe "#index" do
+    before { section }
+
     it "should display index correctly as admin" do
       get :index
 
       expect(response).to have_http_status(:success)
       expect(assigns(:custom_fields_sections)).to exist
       expect(assigns(:custom_fields_sections).count).to eq(1)
-      expect(assigns(:custom_fields_sections)).to match_array(CustomFieldsSection.all)
+      expect(assigns(:custom_fields_sections)).to match_array([section])
       expect(response).to render_template(:index)
     end
 
@@ -53,6 +56,8 @@ describe CustomFieldsSectionsController, type: :controller do
   end
 
   describe "#create" do
+    before { section }
+
     it "should redirect if section created correctly as admin" do
       post :create, params: { custom_fields_section: { name: "Test create" } }
 
@@ -82,7 +87,7 @@ describe CustomFieldsSectionsController, type: :controller do
 
   describe "#edit" do
     it "should display edit existing section as admin" do
-      get :edit, params: { id: CustomFieldsSection.first.id }
+      get :edit, params: { id: section.id }
 
       expect(response).to have_http_status(:success)
       expect(assigns(:custom_fields_section)).to be_present
@@ -97,7 +102,7 @@ describe CustomFieldsSectionsController, type: :controller do
     it "should not be available only as admin users" do
       @request.session[:user_id] = 2
 
-      get :edit, params: { id: CustomFieldsSection.first.id }
+      get :edit, params: { id: section.id }
 
       expect(response).to have_http_status(:forbidden)
       expect(response).to render_template("common/error")
@@ -106,7 +111,7 @@ describe CustomFieldsSectionsController, type: :controller do
 
   describe "#update" do
     it "should redirect if section updated correctly as admin" do
-      post :update, params: { id: CustomFieldsSection.first.id, custom_fields_section: { name: "Test update" } }
+      post :update, params: { id: section.id, custom_fields_section: { name: "Test update" } }
 
       expect(response).to have_http_status(:redirect)
       expect(assigns(:custom_fields_section).id).to be_present
@@ -115,7 +120,7 @@ describe CustomFieldsSectionsController, type: :controller do
     end
 
     it "should render new if section not created correctly as admin" do
-      post :update, params: { id: CustomFieldsSection.first.id, custom_fields_section: { name: "" } }
+      post :update, params: { id: section.id, custom_fields_section: { name: "" } }
 
       expect(response).to have_http_status(:ok)
       expect(response).to render_template(:edit)
@@ -124,7 +129,7 @@ describe CustomFieldsSectionsController, type: :controller do
     it "should not be available only as admin users" do
       @request.session[:user_id] = 2
 
-      post :update, params: { id: CustomFieldsSection.first.id, custom_fields_section: { name: "Test update" } }
+      post :update, params: { id: section.id, custom_fields_section: { name: "Test update" } }
 
       expect(response).to have_http_status(:forbidden)
       expect(response).to render_template("common/error")
@@ -133,7 +138,7 @@ describe CustomFieldsSectionsController, type: :controller do
 
   describe "#destroy" do
     it "should destroy existing section as admin" do
-      delete :destroy, params: { id: CustomFieldsSection.first.id }
+      delete :destroy, params: { id: section.id }
 
       expect(response).to have_http_status(:redirect)
       expect(assigns(:custom_fields_section)).to be_present
@@ -148,7 +153,7 @@ describe CustomFieldsSectionsController, type: :controller do
     it "should not be available only as admin users" do
       @request.session[:user_id] = 2
 
-      delete :destroy, params: { id: CustomFieldsSection.first.id }
+      delete :destroy, params: { id: section.id }
 
       expect(response).to have_http_status(:forbidden)
       expect(response).to render_template("common/error")
