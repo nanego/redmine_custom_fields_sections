@@ -4,10 +4,10 @@
    end %>
 
 <% custom_fields.each do |custom_field|
-  back_url = custom_fields_path(:tab => tab[:name]) %>
+  back_url = custom_fields_path(tab: tab[:name]) %>
 
   <% if custom_field.is_a?(Hash) %>
-    <tr class="section_custom_field">
+    <tr class="section_custom_field" id="<%= custom_field[:name].parameterize %>">
       <td class="name">
         <%= link_to custom_field[:name], edit_custom_fields_section_path(custom_field[:id]) %>
         <% custom_field[:items].each do |item| %>
@@ -25,23 +25,66 @@
       </td>
       <td></td>
       <td class="buttons">
-        <%= reorder_handle(custom_field, :url => custom_field_path(custom_field[:items].first), :param => 'custom_field') %>
+        <%= reorder_handle(custom_field, url: order_custom_fields_section_path(custom_field[:id]), 
+                                         param: "custom_fields_section") %>
         <%= delete_link custom_fields_section_path(custom_field[:id]) %>
       </td>
     </tr>
+    <% custom_field[:items].each_with_index do |item, i|
+      next if i == 0 %>
+      <tr class="section_item_invisible <%= custom_field[:name].parameterize %>"></tr>
+    <% end %>
   <% else %>
     <tr>
       <td class="name"><%= link_to custom_field.name, edit_custom_field_path(custom_field) %></td>
       <td><%= l(custom_field.format.label) %></td>
       <td><%= checked_image custom_field.is_required? %></td>
-      <% if tab[:name] == 'IssueCustomField' %>
+      <% if tab[:name] == "IssueCustomField" %>
         <td><%= checked_image custom_field.is_for_all? %></td>
-        <td><%= l(:label_x_projects, :count => @custom_fields_projects_count[custom_field.id] || 0) if custom_field.is_a? IssueCustomField and !custom_field.is_for_all? %></td>
+        <td><%= l(:label_x_projects, count: @custom_fields_projects_count[custom_field.id] || 0) if custom_field.is_a? IssueCustomField and !custom_field.is_for_all? %></td>
       <% end %>
       <td class="buttons">
-        <%= reorder_handle(custom_field, :url => custom_field_path(custom_field), :param => 'custom_field') %>
+        <%= reorder_handle(custom_field, url: custom_field_path(custom_field), param: "custom_field") %>
         <%= delete_link custom_field_path(custom_field) %>
       </td>
     </tr>
+  <% end %>
+<% end %>
+
+<% if tab[:name] == "ProjectCustomField" %>
+  <%= javascript_tag do %>
+    $(function() { 
+      $("table.custom_fields tbody").on("sortupdate", function( event, ui ) {
+        var section, prevSection;
+
+        // Move after hidden section tr
+        if (prevSection = ui.item.prev()) {
+          ui.item.before($("tr." + prevSection.attr("id")));
+        }
+
+        // Move hidden tr with section
+        if (section = ui.item.attr("id")) {
+          ui.item.after($("tr." + section));
+        }
+
+        // Redraw odd / even
+        addOddEvenToTr();
+      });
+
+      // Override .odd / .even system because of hidden tr
+      $("table.custom_fields").addClass("odd-even");
+      addOddEvenToTr();
+
+      function addOddEvenToTr() {
+        $("table.custom_fields.odd-even").each(function() {
+          // Remove previous even class
+          $("tr.even").removeClass("even");
+
+          // Note that, confusingly, jQuery's filter pseudos are 0-indexed
+          // while CSS :nth-child() is 1-indexed
+          $("tr:not(.section_item_invisible):even").addClass("even");
+        });
+      }
+    });
   <% end %>
 <% end %>

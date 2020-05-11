@@ -7,6 +7,10 @@ tr.section_custom_field span {
   line-height: 20px;
 }
 
+tr.section_item_invisible {
+  display: none;
+}
+
 fieldset.custom_fields_section {
   margin: 20px 10px;
   background-color: #ececec;

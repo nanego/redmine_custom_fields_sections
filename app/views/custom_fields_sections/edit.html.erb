@@ -2,20 +2,20 @@
 
 <% if @custom_fields_section.project_custom_fields.present? %>
   <table class="list custom_fields_sections">
-    <thead><tr>
-      <th><%= l(:custom_fields) %></th>
-      <th>Position</th>
-      <th></th>
-    </tr></thead>
+    <thead>
+      <tr>
+        <th><%= l(:custom_fields) %></th>
+        <th></th>
+      </tr>
+    </thead>
     <tbody>
     <% @custom_fields_section.project_custom_fields.sort.each do |cf| -%>
       <tr>
         <td class="name">
           <%= link_to cf.name, edit_custom_field_path(cf) %>
         </td>
-        <td><%= cf.position %></td>
         <td class="buttons">
-          <%= reorder_handle(cf, :url => custom_field_path(cf), :param => 'custom_field') %>
+          <%= reorder_handle(cf, url:  custom_field_path(cf), param:  'custom_field') %>
         </td>
       </tr>
     <% end; reset_cycle %>
@@ -26,7 +26,7 @@
 <% end %>
 
 <%= labelled_form_for @custom_fields_section do |f| %>
-  <%= render :partial => 'form', :locals => { :f => f } %>
+  <%= render partial:  'form', locals:  { f:  f } %>
   <%= submit_tag l(:button_edit) %>
 <% end %>
 

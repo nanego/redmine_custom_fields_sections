@@ -2,7 +2,7 @@ class CustomFieldsSectionsController < ApplicationController
   layout "admin"
 
   before_action :require_admin
-  before_action :set_custom_fields_section, :only => %i[edit update destroy]
+  before_action :set_custom_fields_section, only: %i[edit update destroy order]
 
   def index
     @custom_fields_sections = CustomFieldsSection.all
@@ -44,6 +44,19 @@ class CustomFieldsSectionsController < ApplicationController
     @custom_fields_section.destroy
 
     redirect_to custom_fields_sections_path
+  end
+
+  def order
+    fields = @custom_fields_section.project_custom_fields.sort
+    position = params.require(:custom_fields_section).require(:position)
+
+    fields.reverse.each do |cf|
+      cf.update(position: position.to_i + fields.index(cf))
+    end
+
+    respond_to do |format|
+      format.js { head 200 }
+    end
   end
 
   private

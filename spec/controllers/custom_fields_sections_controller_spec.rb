@@ -7,10 +7,17 @@ describe CustomFieldsSectionsController, type: :controller do
   before do
     @request.session[:user_id] = 1 # Admin
     User.current = User.find(1)
-    Setting.default_language = 'en'
+    Setting.default_language = "en"
   end
 
   let (:section) { CustomFieldsSection.create(name: "Test section") }
+  let(:custom_fields) do
+    [
+      ProjectCustomField.create!(name: "field1", section: section, field_format: "string"),
+      ProjectCustomField.create!(name: "field2", section: section, field_format: "string"),
+      ProjectCustomField.create!(name: "field", field_format: "string")
+    ]
+  end
 
   describe "#index" do
     before { section }
@@ -25,7 +32,7 @@ describe CustomFieldsSectionsController, type: :controller do
       expect(response).to render_template(:index)
     end
 
-    it "should not be available only as admin users" do
+    it "should be available only as admin users" do
       @request.session[:user_id] = 2
 
       get :index
@@ -45,7 +52,7 @@ describe CustomFieldsSectionsController, type: :controller do
       expect(response).to render_template(:new)
     end
 
-    it "should not be available only as admin users" do
+    it "should be available only as admin users" do
       @request.session[:user_id] = 2
 
       get :new
@@ -75,7 +82,7 @@ describe CustomFieldsSectionsController, type: :controller do
       expect(response).to render_template(:new)
     end
 
-    it "should not be available only as admin users" do
+    it "should be available only as admin users" do
       @request.session[:user_id] = 2
 
       post :create, params: { custom_fields_section: { name: "Test create" } }
@@ -86,6 +93,11 @@ describe CustomFieldsSectionsController, type: :controller do
   end
 
   describe "#edit" do
+    before do
+      section
+      custom_fields
+    end
+
     it "should display edit existing section as admin" do
       get :edit, params: { id: section.id }
 
@@ -99,7 +111,15 @@ describe CustomFieldsSectionsController, type: :controller do
       expect { get :edit, params: { id: "100" } }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "should not be available only as admin users" do
+    it "should reorder fields as admin" do
+      custom_fields.last.update(position: 3)
+
+      get :edit, params: { id: section.id }
+
+      expect(section.project_custom_fields.sort.last.position).to eq(2)
+    end
+
+    it "should be available only as admin users" do
       @request.session[:user_id] = 2
 
       get :edit, params: { id: section.id }
@@ -126,7 +146,7 @@ describe CustomFieldsSectionsController, type: :controller do
       expect(response).to render_template(:edit)
     end
 
-    it "should not be available only as admin users" do
+    it "should be available only as admin users" do
       @request.session[:user_id] = 2
 
       post :update, params: { id: section.id, custom_fields_section: { name: "Test update" } }
@@ -150,13 +170,43 @@ describe CustomFieldsSectionsController, type: :controller do
       expect { delete :destroy, params: { id: "100" } }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "should not be available only as admin users" do
+    it "should be available only as admin users" do
       @request.session[:user_id] = 2
 
       delete :destroy, params: { id: section.id }
 
       expect(response).to have_http_status(:forbidden)
       expect(response).to render_template("common/error")
+    end
+  end
+
+  describe "#order" do
+    before do
+      section
+      custom_fields
+    end
+
+    it "should update section fields position" do
+      put :order, params: { id: section.id, custom_fields_section: { position: "2" }, format: :js }
+
+      expect(section.project_custom_fields.sort.first.position).to eq(2)
+      expect(section.project_custom_fields.sort.last.position).to eq(3)
+    end
+
+    it "should not change order on a not existing section as admin" do
+      expect { put :order, params: { id: "100", custom_fields_section: { position: "2" }, format: :js } }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "should not change order if no params[:position] as admin" do
+      expect { put :order, params: { id: section.id, custom_fields_section: { }, format: :js } }.to raise_error(ActionController::ParameterMissing)
+    end
+
+    it "should be available only as admin users" do
+      @request.session[:user_id] = 2
+
+      put :order, params: { id: section.id, custom_fields_section: { position: "2" }, format: :js }
+
+      expect(response).to have_http_status(:forbidden)
     end
   end
 end
