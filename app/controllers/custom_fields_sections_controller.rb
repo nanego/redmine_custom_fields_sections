@@ -22,15 +22,7 @@ class CustomFieldsSectionsController < ApplicationController
     end
   end
 
-  def edit
-    first_position = 0
-
-    @custom_fields_section.project_custom_fields.sort.each_with_index do |cf, i|
-      first_position = cf.position if i == 0
-
-      cf.update(position: first_position + i)
-    end
-  end
+  def edit; end
 
   def update
     if @custom_fields_section.update(custom_fields_section_params)
@@ -48,10 +40,17 @@ class CustomFieldsSectionsController < ApplicationController
 
   def order
     fields = @custom_fields_section.project_custom_fields.sort
-    position = params.require(:custom_fields_section).require(:position)
+    position = params.require(:custom_fields_section).require(:position).to_i
+    previous_position = fields.first.position
 
-    fields.reverse.each do |cf|
-      cf.update(position: position.to_i + fields.index(cf))
+    if position > previous_position
+      fields.reverse.each do |cf|
+        cf.update(position: position + fields.index(cf))
+      end
+    else
+      fields.each_with_index do |cf, i|
+        cf.update(position: position + i)
+      end
     end
 
     respond_to do |format|

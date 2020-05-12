@@ -93,11 +93,6 @@ describe CustomFieldsSectionsController, type: :controller do
   end
 
   describe "#edit" do
-    before do
-      section
-      custom_fields
-    end
-
     it "should display edit existing section as admin" do
       get :edit, params: { id: section.id }
 
@@ -109,14 +104,6 @@ describe CustomFieldsSectionsController, type: :controller do
 
     it "should not display edit not existing section as admin" do
       expect { get :edit, params: { id: "100" } }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-
-    it "should reorder fields as admin" do
-      custom_fields.last.update(position: 3)
-
-      get :edit, params: { id: section.id }
-
-      expect(section.project_custom_fields.sort.last.position).to eq(2)
     end
 
     it "should be available only as admin users" do
