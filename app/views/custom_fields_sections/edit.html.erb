@@ -30,6 +30,8 @@
   <%= submit_tag l(:button_edit) %>
 <% end %>
 
-<%= javascript_tag do %>
-  $(function() { $("table.custom_fields_sections tbody").positionedItems({}, { firstPosition: <%= @custom_fields_section.project_custom_fields.sort.first.position %> }); });
+<% if @custom_fields_section.project_custom_fields.present? %>
+  <%= javascript_tag do %>
+    $(function() { $("table.custom_fields_sections tbody").positionedItems({}, { firstPosition: <%= @custom_fields_section.project_custom_fields.sort.first.position %> }); });
+  <% end %>
 <% end %>
