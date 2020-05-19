@@ -1,7 +1,3 @@
 fr:
-  custom_fields_section_caption: Groupe de champs personnalisés
+  custom_fields_section_caption: Groupes de champs personnalisés
   label_custom_field_section_new: Nouveau groupe de champs personnalisés
-  name: Nom
-  position: Position
-  custom_fields_count: Champs personnalisés
-  custom_fields: Champs personnalisés
