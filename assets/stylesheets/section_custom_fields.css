@@ -14,6 +14,7 @@ tr.section_item_invisible {
 fieldset.custom_fields_section {
   margin: 20px 10px;
   background-color: #ececec;
+  break-inside: avoid;
 }
 
 @media screen and (min-width: 1200px) {
