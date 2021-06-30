@@ -23,7 +23,11 @@
           <span><%=  l(item.format.label) %></span>
         <% end %>
       </td>
-      <td></td>
+      <td><% custom_field[:items].each do |item| %>
+          <br />
+          <span><%= checked_image item.is_required? %></span>
+        <% end %>
+      </td>
       <td class="buttons">
         <%= reorder_handle(custom_field, url: order_custom_fields_section_path(custom_field[:id]), 
                                          param: "custom_fields_section") %>
