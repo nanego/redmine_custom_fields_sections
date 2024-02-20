@@ -11,8 +11,8 @@ module RedmineCustomFieldsSections
 
     class ModelHook < Redmine::Hook::Listener
       def after_plugins_loaded(_context = {})
-        require_relative "project_custom_field_patch"
-        require_relative "custom_fields_helper_patch"
+        require_relative "models/project_custom_field_patch"
+        require_relative "helpers/custom_fields_helper_patch"
       end
     end
   end
