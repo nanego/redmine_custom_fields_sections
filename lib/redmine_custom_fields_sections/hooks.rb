@@ -8,4 +8,11 @@ module RedmineCustomFieldsSections
 
     render_on :view_projects_form, partial: "projects/section_custom_fields"
   end
+
+  class ModelHook < Redmine::Hook::Listener
+    def after_plugins_loaded(_context = {})
+      require_relative "project_custom_field_patch"
+      require_relative "custom_fields_helper_patch"
+    end
+  end
 end

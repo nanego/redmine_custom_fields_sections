@@ -1,6 +1,6 @@
 require_dependency "custom_fields_helper"
 
-module CustomFieldsHelper
+module RedmineCustomFieldsSections::CustomFieldsHelperPatch
   def group_projects_custom_fields_by_section(project_custom_fields)
     grouped = []
 
@@ -39,3 +39,6 @@ module CustomFieldsHelper
     grouped
   end
 end
+
+CustomFieldsHelper.prepend RedmineCustomFieldsSections::CustomFieldsHelperPatch
+ActionView::Base.send(:include, CustomFieldsHelper)
